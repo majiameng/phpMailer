@@ -1,0 +1,24 @@
+{
+    "name": "tinymeng/mailer",
+    "description": "php发送邮件email",
+    "type": "library",
+    "keywords": [
+        "tinymeng","email","Mailer"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "TinyMeng",
+            "email": "666@majiameng.com",
+            "homepage": "https://majiameng.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "tinymeng\\mailer\\": "src"
+        }
+    }
+}
