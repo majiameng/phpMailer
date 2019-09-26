@@ -17,8 +17,6 @@ $config = [
 //******************** 配置信息 end ********************************
 
 $smtpemailto = $_POST['toemail'];//发送给谁
-$smtpuser = "send@majiameng.com";//SMTP服务器的用户帐号，注：部分邮箱只需@前面的用户名
-$smtppass = "Ma13146662737";//SMTP服务器的用户密码
 $mailtitle = $_POST['title'];//邮件主题
 $mailcontent = "<h1>".$_POST['content']."</h1>";//邮件内容
 
