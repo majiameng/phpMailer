@@ -14,11 +14,12 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "tinymeng/tools": "^1.0.4"
     },
     "autoload": {
         "psr-4": {
-            "tinymeng\\mailer\\": ""
+            "tinymeng\\mailer\\": "src"
         }
     }
 }
