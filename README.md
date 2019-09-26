@@ -13,9 +13,9 @@ composer require tinymeng/mailer dev-master -vvv
 > 类库使用的命名空间为`\\tinymeng\\mailer`
 
  ```php
- 
 use tinymeng\mailer\Email;
 
+//******************** 配置信息 start ********************************
 $config = [
     'host'  => 'smtp.qq.com',
     'port'    => '465',
@@ -25,11 +25,13 @@ $config = [
     'from_address'=> '*******@qq.com',
     'from_name'=> 'TinyMeng管理员',
 ];
+//******************** 配置信息 end ********************************
+
 
 $email = Email::smtp($config);
 $email->setDebug(true);//线上注释此行
 $email->toEmail("879042886@qq.com");
-// $email->toEmail("879042886@qq.com,839528187@qq.com");//多账号已逗号隔开
+// $email->toEmail("879042886@qq.com,879042775@qq.com");//多账号已逗号隔开
 $mailtitle = "饭后等你,测试邮件发送";
 $mailcontent = "饭后等你,测试邮件发送";
 $mailtype = "html";
@@ -58,7 +60,7 @@ $time_out = 30;//is used in fsockopen()
 ```
 
 
-> 如果报错
+> 如报错
 ```
 /**
  *  'Trying to smtp.163.com:25 Error: Cannot connenct to relay host smtp.163.com
@@ -70,3 +72,12 @@ $time_out = 30;//is used in fsockopen()
  * 注意，部分smtp服务器地址前面一定要加上ssl://，否则还是不可用。
  */
  ```
+ 
+### 实例使用
+composer require tinymeng/mailer dev-master -vvv
+ 
+将`example`文件下的 `index.html`和`sendmail.php`文件放在与vendor平级目录
+
+修改`sendmail.php`对应的配置
+
+> 注: 邮箱不能自己给自己发送
