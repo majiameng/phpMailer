@@ -275,14 +275,14 @@ class Smtp extends Gateway{
         if ($this->log_file == "") {
             return TRUE;
         }
-        $message = date("M d H:i:s ").get_current_user()."[".getmypid()."]: ".$message;
-        if (!@file_exists($this->log_file) && !($fp = @fopen($this->log_file, "a"))) {
+        $message = date("Y-m-d H:i:s ").get_current_user()."[".getmypid()."]: ".$message;
+        if (($handle = @fopen($this->log_file, "a")) === false) {
             $this->debug("Warning: Cannot open log file \"".$this->log_file."\"\n");
             return FALSE;
         }
-        flock($fp, LOCK_EX);
-        fputs($fp, $message);
-        fclose($fp);
+        flock($handle, LOCK_EX);
+        fputs($handle, $message);
+        fclose($handle);
         return TRUE;
     }
 
