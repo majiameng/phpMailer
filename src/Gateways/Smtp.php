@@ -276,7 +276,7 @@ class Smtp extends Gateway{
             return TRUE;
         }
         $message = date("M d H:i:s ").get_current_user()."[".getmypid()."]: ".$message;
-        if (!@file_exists($this->log_file) || !($fp = @fopen($this->log_file, "a"))) {
+        if (!@file_exists($this->log_file) && !($fp = @fopen($this->log_file, "a"))) {
             $this->debug("Warning: Cannot open log file \"".$this->log_file."\"\n");
             return FALSE;
         }

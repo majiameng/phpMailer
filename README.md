@@ -5,7 +5,7 @@ PHP发送邮件虽然很简单,但是用起来有的时候总是出问题,分享
 ### Install
 
 ```
-composer require tinymeng/mailer dev-master -vvv
+composer require tinymeng/mailer ^2.0 -vvv
 ```
 
 ### 使用
