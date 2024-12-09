@@ -15,72 +15,27 @@ class Smtp extends Gateway{
      * @date: 2019/9/26 16:21
      */
     private $sock;
+    private $boundary;
 
     /**
      * Function Name: 发送email
      * @param string $subject 邮件主题
      * @param string $body 邮件内容
-     * @param string $mailtype 邮件格式（HTML/TXT）,TXT为文本邮件
+     * @param string $mailType 邮件格式（HTML/TXT）,TXT为文本邮件
      * @return bool
      * @author Tinymeng <666@majiameng.com>
      * @date: 2019/9/26 15:33
      */
-    public function sendmail($subject, $body, $mailtype = 'HTML')
+    public function sendmail($subject, $body, $mailType = 'HTML')
     {
         $mail_from = $this->getAddress($this->stripComment($this->from_address));
         $body = preg_replace("/(^|(\r\n))(\.)/", "\1.\3", $body);
-
-        // Set headers
-        $header = "MIME-Version: 1.0\r\n";
-        if (strtoupper($mailtype) == "HTML") {
-            $boundary = "====" . md5(uniqid()) . "====";
-            $header .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
-            // Body with text and attachments
-            $body = "--$boundary\r\n" .
-                "Content-Type: text/plain; charset=UTF-8\r\n" .
-                "Content-Transfer-Encoding: 7bit\r\n\r\n" .
-                $body . "\r\n";
-
-            if(!empty($this->attachments)){
-                foreach ($this->attachments as $attachment) {
-                    $fileName = basename($attachment);
-                    $fileContent = chunk_split(base64_encode(file_get_contents($attachment)));
-                    $body .= "--$boundary\r\n" .
-                        "Content-Type: application/octet-stream; name=\"$fileName\"\r\n" .
-                        "Content-Transfer-Encoding: base64\r\n" .
-                        "Content-Disposition: attachment; filename=\"$fileName\"\r\n\r\n" .
-                        $fileContent . "\r\n";
-                }
-                $this->attachments = array();
-            }
-
-            $body .= "--$boundary--";
-        } else {
-            $header .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        }
-        $header .= "To: " . $this->to_address . "\r\n";
-        if (!empty($this->cc_address)) {
-            $header .= "Cc: " . $this->cc_address . "\r\n";
-        }
-        $header .= "From: $this->from_address <" . $this->from_address . ">\r\n";
-        $header .= "Subject: " . $subject . "\r\n";
-        if(!empty($this->headers)){
-            foreach ($this->headers as $head){
-                $header .= $head;
-            }
-        }
-        $header .= "Date: " . date("r") . "\r\n";
-        $header .= "X-Mailer: By Redhat (PHP/" . phpversion() . ")\r\n";
-        $header .= "Message-ID: <" . date("YmdHis") . "." . uniqid() . "@" . $mail_from . ">\r\n";
+        $this->boundary = "====" . md5(uniqid()) . "====";
+        $body = $this->prepareBody($body,$mailType);
+        $header = $this->buildHeaders($subject, $mailType, $mail_from);
 
         // Prepare recipient list
-        $TO = explode(",", $this->stripComment($this->to_address));
-        if (!empty($this->cc_address)) {
-            $TO = array_merge($TO, explode(",", $this->stripComment($this->cc_address)));
-        }
-        if (!empty($this->bcc_address)) {
-            $TO = array_merge($TO, explode(",", $this->stripComment($this->bcc_address)));
-        }
+        $TO = $this->getRecipientList();
 
         $sent = true;
         foreach ($TO as $rcpt_to) {
@@ -100,6 +55,89 @@ class Smtp extends Gateway{
             $this->logWrite("Disconnected from remote host\n");
         }
         return $sent;
+    }
+
+    /**
+     * @param $subject
+     * @param $mailType
+     * @param $mail_from
+     * @return string
+     * @author Tinymeng <666@majiameng.com>
+     */
+    private function buildHeaders($subject, $mailType, $mail_from){
+        // Set headers
+        $header = "MIME-Version: 1.0\r\n";
+        if (strtoupper($mailType) == "HTML") {
+            $header .= "Content-Type: multipart/mixed; boundary=\"$this->boundary\"\r\n";
+        } else {
+            $header .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        }
+        $header .= "To: " . $this->to_address . "\r\n";
+        if (!empty($this->cc_address)) {
+            $header .= "Cc: " . $this->cc_address . "\r\n";
+        }
+        $header .= "From: $this->from_address <" . $this->from_address . ">\r\n";
+        $header .= "Subject: " . $subject . "\r\n";
+        if(!empty($this->headers)){
+            foreach ($this->headers as $head){
+                $header .= $head;
+            }
+        }
+        $header .= "Date: " . date("r") . "\r\n";
+        $header .= "X-Mailer: By Redhat (PHP/" . phpversion() . ")\r\n";
+        $header .= "Message-ID: <" . date("YmdHis") . "." . uniqid() . "@" . $mail_from . ">\r\n";
+        return $header;
+    }
+
+
+    /**
+     * @param $body
+     * @param $mailType
+     * @return string
+     * @author Tinymeng <666@majiameng.com>
+     */
+    private function prepareBody($body, $mailType){
+        if (strtoupper($mailType) == "HTML") {
+            // Body with text and attachments
+            $body = "--$this->boundary\r\n" .
+                "Content-Type: text/html; charset=UTF-8\r\n" .
+                "Content-Transfer-Encoding: 7bit\r\n\r\n" .
+                $body . "\r\n";
+
+            if(!empty($this->attachments)){
+                foreach ($this->attachments as $attachment) {
+                    $fileName = basename($attachment);
+                    $fileContent = chunk_split(base64_encode(file_get_contents($attachment)));
+                    $body .= "--$this->boundary\r\n" .
+                        "Content-Type: application/octet-stream; name=\"$fileName\"\r\n" .
+                        "Content-Transfer-Encoding: base64\r\n" .
+                        "Content-Disposition: attachment; filename=\"$fileName\"\r\n\r\n" .
+                        $fileContent . "\r\n";
+                }
+                $this->attachments = array();
+            }
+
+            $body .= "--$this->boundary--";
+        } else {
+            $body .= "\r\n";
+        }
+        return $body;
+    }
+
+    /**
+     * @return false|string[]
+     * @author Tinymeng <666@majiameng.com>
+     */
+    private function getRecipientList()
+    {
+        $TO = explode(",", $this->stripComment($this->to_address));
+        if (!empty($this->cc_address)) {
+            $TO = array_merge($TO, explode(",", $this->stripComment($this->cc_address)));
+        }
+        if (!empty($this->bcc_address)) {
+            $TO = array_merge($TO, explode(",", $this->stripComment($this->bcc_address)));
+        }
+        return $TO;
     }
 
     /**
