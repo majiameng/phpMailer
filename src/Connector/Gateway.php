@@ -1,11 +1,8 @@
 <?php
 namespace tinymeng\mailer\Connector;
 
-use tinymeng\mailer\Gateways\Smtp;
-use tinymeng\tools\Strings;
-
 /**
- * 所有第三方登录必须继承的抽象类
+ * 所有Email必须继承的抽象类
  */
 abstract class Gateway implements GatewayInterface
 {
@@ -27,7 +24,11 @@ abstract class Gateway implements GatewayInterface
     protected $password;    //邮箱密码(如果是第三方请去设置里获取)
     protected $from_address;//发送人email
     protected $from_name;   //发送人名称
-    protected $to_adress;   //接收人email
+
+    protected $to_address;   //接收人email
+    protected $cc_address;   //抄送人email
+    protected $bcc_address;  //隐性抄送人email
+
     protected $log_file = false;//记录日志
     protected $host_name = "localhost"; //is used in HELO command
     protected $time_out = 30;//is used in fsockopen()
@@ -45,6 +46,17 @@ abstract class Gateway implements GatewayInterface
      * @date: 2019/9/26 15:30 
      */
     protected $auth = false;
+
+    /**
+     * 附件
+     * @var array
+     */
+    protected $attachments = [];
+    /**
+     * headers
+     * @var array
+     */
+    protected $headers = [];
 
     /**
      * Gateway constructor.
@@ -65,7 +77,7 @@ abstract class Gateway implements GatewayInterface
             'password'=> false,
             'from_address'=> '',
             'from_name'=> '管理员',
-            'to_adress'=> '',
+            'to_address'=> '',
         ];
         $this->config = array_replace_recursive($_config,$config);
         if(empty($this->config['from_address'])){
@@ -97,13 +109,67 @@ abstract class Gateway implements GatewayInterface
 
     /**
      * Function Name: 发送给to email
+     * @param string $email 多个用,分割
      * @return $this
      * @author Tinymeng <666@majiameng.com>
      * @date: 2019/9/26 15:20
      */
     public function toEmail($email){
-        $this->to_adress = $email;
+        $this->to_address = $email;
         return $this;
     }
 
+    /**
+     * Function Name: 抄送 email
+     * @param string $email 多个用,分割
+     * @return $this
+     * @author Tinymeng <666@majiameng.com>
+     * @date: 2019/9/26 15:20
+     */
+    public function ccEmail($email){
+        $this->cc_address = $email;
+        return $this;
+    }
+
+    /**
+     * Function Name: 隐性抄送 email
+     * @param string $email 多个用,分割
+     * @return $this
+     * @author Tinymeng <666@majiameng.com>
+     * @date: 2019/9/26 15:20
+     */
+    public function bccEmail($email){
+        $this->bcc_address = $email;
+        return $this;
+    }
+
+    /**
+     * 添加附件
+     * @param array|string $attachments
+     * @return $this
+     */
+    public function addAttachments($attachments){
+        if(is_array($attachments)){
+            foreach ($attachments as $attachment){
+                if(file_exists($attachment)) $this->attachments[] = $attachment;
+            }
+        }else{
+            if(file_exists($attachments)) $this->attachments[] = $attachments;
+        }
+        return $this;
+    }
+
+    /**
+     * 添加Header
+     * @param array|string $headers
+     * @return $this
+     */
+    public function addHeaders($headers){
+        if(is_array($headers)){
+            $this->headers = array_merge($this->headers,$headers);
+        }else{
+            $this->headers[] = $headers;
+        }
+        return $this;
+    }
 }

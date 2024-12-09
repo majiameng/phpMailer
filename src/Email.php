@@ -1,7 +1,7 @@
 <?php
 namespace tinymeng\mailer;
 
-use \tinymeng\tools\Strings;
+use \tinymeng\tools\StringTool;
 /**
  * Class Name: PHP Mailer类
  * @author Tinymeng <666@majiameng.com>
@@ -22,7 +22,7 @@ class Email
      */
     protected static function init($gateway, $config = null)
     {
-        $class = __NAMESPACE__ . '\\Gateways\\' . Strings::uFirst($gateway);
+        $class = __NAMESPACE__ . '\\Gateways\\' . StringTool::uFirst($gateway);
         if (class_exists($class)) {
             $app = new $class($config);
             return $app;

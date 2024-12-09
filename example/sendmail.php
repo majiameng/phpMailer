@@ -24,6 +24,12 @@ $email = Email::smtp($config);
 $email->setDebug(true);//线上注释此行
 $email->toEmail($smtpemailto);
 $mailtype = "html";
+//$cc = "xxx2886@qq.com";
+//$bcc = "xxx1234@qq.com";
+//$attachments = ["F:\git\admin_management_api\app\command\Hello.php"];
+//$email->addAttachments($attachments);//添加附件
+//$email->ccEmail($cc);//抄送人
+//$email->bccEmail($bcc);//隐性抄送人
 $state = $email->sendmail( $mailtitle, $mailcontent, $mailtype);
 echo "<div style='width:300px; margin:36px auto;'>";
 if($state==""){

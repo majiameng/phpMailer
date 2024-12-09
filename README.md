@@ -35,6 +35,12 @@ $email->toEmail("879042886@qq.com");
 $mailtitle = "饭后等你,测试邮件发送";
 $mailcontent = "饭后等你,测试邮件发送";
 $mailtype = "html";
+//$cc = "xxx2886@qq.com";
+//$bcc = "xxx1234@qq.com";
+//$attachments = ["F:\git\admin_management_api\app\command\Hello.php"];
+//$email->addAttachments($attachments);//添加附件
+//$email->ccEmail($cc);//抄送人
+//$email->bccEmail($bcc);//隐性抄送人
 $state = $email->sendmail( $mailtitle, $mailcontent, $mailtype);
 if($state==""){
     exit("发送失败");
@@ -53,7 +59,7 @@ $username;    //邮箱用户名(发送人email)
 $password;    //邮箱密码(如果是第三方请去设置里获取)
 $from_address;//发送人email
 $from_name;   //发送人名称
-$to_adress;   //接收人email
+$to_address;   //接收人email
 $log_file = false;//记录日志
 $host_name = "localhost"; //is used in HELO command
 $time_out = 30;//is used in fsockopen()
