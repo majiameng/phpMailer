@@ -23,7 +23,6 @@ abstract class Gateway implements GatewayInterface
     protected $username;    //邮箱用户名(发送人email)
     protected $password;    //邮箱密码(如果是第三方请去设置里获取)
     protected $from_address;//发送人email
-    protected $from_name;   //发送人名称
 
     protected $to_address;   //接收人email
     protected $cc_address;   //抄送人email
@@ -45,7 +44,7 @@ abstract class Gateway implements GatewayInterface
      * @author Tinymeng <666@majiameng.com>
      * @date: 2019/9/26 15:30 
      */
-    protected $auth = false;
+    protected $auth = true;
 
     /**
      * 附件
@@ -76,7 +75,6 @@ abstract class Gateway implements GatewayInterface
             'username'=> false,
             'password'=> false,
             'from_address'=> '',
-            'from_name'=> '管理员',
             'to_address'=> '',
         ];
         $this->config = array_replace_recursive($_config,$config);
@@ -92,9 +90,27 @@ abstract class Gateway implements GatewayInterface
                 $this->$key = $value;
             }
         }
-        if(!empty($this->username) && !empty($this->password)){
-           $this->auth = true;
-        }
+        $this->setPassword($this->config['password']);
+    }
+
+    /**
+     * @param $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        $this->setAuth(!($this->password === false));
+        return $this;
+    }
+
+    /**
+     * @param $auth
+     * @return void
+     */
+    public function setAuth($auth)
+    {
+        $this->auth = $auth;
     }
 
     /**
