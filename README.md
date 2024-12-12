@@ -1,4 +1,12 @@
-# php发送邮件email
+<h1 align="center">tinymeng/mailer</h1>
+<p align="center">
+<a href="https://scrutinizer-ci.com/g/majiameng/mailer/?branch=master"><img src="https://scrutinizer-ci.com/g/majiameng/mailer/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/majiameng/mailer/build-status/master"><img src="https://scrutinizer-ci.com/g/majiameng/mailer/badges/build.png?b=master" alt="Build Status"></a>
+<a href="https://packagist.org/packages/tinymeng/oauth"><img src="https://poser.pugx.org/tinymeng/oauth/v/stable" alt="Latest Stable Version"></a>
+<a href="https://github.com/majiameng/mailer/tags"><img src="https://poser.pugx.org/tinymeng/oauth/downloads" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/tinymeng/oauth"><img src="https://poser.pugx.org/tinymeng/oauth/v/unstable" alt="Latest Unstable Version"></a>
+<a href="https://github.com/majiameng/mailer/blob/master/LICENSE"><img src="https://poser.pugx.org/tinymeng/oauth/license" alt="License"></a>
+</p>
 
 PHP发送邮件要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。最少逻辑使用最简单的Email发送!!!
 
