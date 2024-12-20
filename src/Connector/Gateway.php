@@ -166,9 +166,17 @@ abstract class Gateway implements GatewayInterface
      */
     public function addAttachments($attachments){
         $attachments = is_array($attachments) ? $attachments : [$attachments];
-        foreach ($attachments as $attachment){
+        foreach ($attachments as $fileName=>$attachment){
             if(file_exists($attachment) || $this->isURL($attachment)) {
-                $this->attachments[] = $attachment;
+                if(is_numeric($fileName)){
+                    $fileName = basename($attachment);
+                }else{
+                    $extension = pathinfo($attachment, PATHINFO_EXTENSION);
+                    if (strpos($fileName, '.'.$extension) === false) {
+                        $fileName .= '.'.$extension;
+                    }
+                }
+                $this->attachments[$fileName] = $attachment;
             }
         }
         return $this;

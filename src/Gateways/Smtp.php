@@ -105,8 +105,7 @@ class Smtp extends Gateway{
                 $body . "\r\n";
 
             if(!empty($this->attachments)){
-                foreach ($this->attachments as $attachment) {
-                    $fileName = basename($attachment);
+                foreach ($this->attachments as $fileName=>$attachment) {
                     $fileContent = chunk_split(base64_encode(file_get_contents($attachment)));
                     $body .= "--$this->boundary\r\n" .
                         "Content-Type: application/octet-stream; name=\"$fileName\"\r\n" .

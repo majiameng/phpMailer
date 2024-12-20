@@ -32,7 +32,8 @@ class MailerTest extends TestCase
 //        $cc = "xxx2886@qq.com";
 //        $bcc = "xxx1234@qq.com";
 //        $attachments = ['E:\git\phpMailer\example\sendmail.php'];
-        $attachments = ['http://oss-joywork.oss-cn-beijing.aliyuncs.com/miningplatform/api/6bb8b72d99de37d8e7b86243b52898ec.csv'];
+//        $attachments = ['http://oss-joywork.oss-cn-beijing.aliyuncs.com/miningplatform/api/6bb8b72d99de37d8e7b86243b52898ec.csv'];
+        $attachments = ['财务报表.csv'=>'http://oss-joywork.oss-cn-beijing.aliyuncs.com/miningplatform/api/6bb8b72d99de37d8e7b86243b52898ec.csv'];
         $email->addAttachments($attachments);//添加附件
 //        $email->ccEmail($cc);//抄送人
 //        $email->bccEmail($bcc);//隐性抄送人
